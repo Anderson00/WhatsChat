@@ -3,11 +3,13 @@
     android:orientation="horizontal" android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="right"
-    android:padding="10dp">
+    android:padding="2dp"
+    android:id="@+id/msg_parent">
 
     <TextView
         android:id="@+id/msg"
-        android:padding="5dp"
+        android:padding="10dp"
+        android:textSize="16dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/message_response"
