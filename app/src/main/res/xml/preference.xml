@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="Basics">
+        <CheckBoxPreference
+            android:key="checkbox"
+            android:summary="Tap to check if on or off"
+            android:title="Checkbox Preference" />
+        <RingtonePreference
+            android:key="ringtone"
+            android:showDefault="true"
+            android:showSilent="true"
+            android:summary="Pick a ringtone you like"
+            android:title="Ringtone Preference" />
+        <EditTextPreference
+            android:dialogTitle="Enter a text"
+            android:key="text"
+            android:summary="Click to show a text entry dialog"
+            android:title="EditText Preference" />
+        <ListPreference
+            android:dialogTitle="Select duration"
+            android:entries="@android:array/emailAddressTypes"
+            android:entryValues="@android:array/phoneTypes"
+            android:key="list"
+            android:summary="Click to show a list to choose from"
+            android:title="List Preference" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Connection">
+        <SwitchPreference
+            android:key="switch"
+            android:title="Online"
+            android:summary="Click para mudar para o modo offline ou online"
+            android:defaultValue="true"/>
+    </PreferenceCategory>
+</PreferenceScreen>
