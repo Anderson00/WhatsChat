@@ -32,8 +32,6 @@ public class ChatActivity extends AppCompatActivity {
 
         title.setText(this.profileTarget.getNameProfile());
         subtitle.setText("online");
-
-        Toast.makeText(this, this.profileTarget.getNameProfile(), Toast.LENGTH_SHORT).show();
     }
 
     @Override
