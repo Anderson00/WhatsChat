@@ -52,8 +52,10 @@ public class HomeFragment extends Fragment {
 
         List<Fragment> fragments = new ArrayList<Fragment>();
         final MessagesFragment msgFragment = new MessagesFragment();
+        fragments.add(new MapFragment());
         fragments.add(msgFragment);
         fragments.add(new PlaceholderFragment());
+
 
         SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(ctx, ctx.getSupportFragmentManager(), fragments);
         ViewPager viewPager = root.findViewById(R.id.view_pager);

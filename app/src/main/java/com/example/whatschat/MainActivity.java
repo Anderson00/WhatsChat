@@ -44,7 +44,8 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnR
 
         transaction = manager.beginTransaction();
         transaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
-        transaction.add(R.id.root, new LoginFragment());
+        //transaction.add(R.id.root, new LoginFragment());
+        transaction.add(R.id.root, new HomeFragment());
         transaction.commit();
     }
 
@@ -59,7 +60,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnR
     public void replaceFragment(Fragment fragment) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.root, fragment);
-        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+        //transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
         transaction.commit();
     }
 }
