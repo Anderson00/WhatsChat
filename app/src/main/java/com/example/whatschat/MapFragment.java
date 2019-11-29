@@ -2,12 +2,14 @@ package com.example.whatschat;
 
 import android.Manifest;
 import android.content.Context;
+import android.location.Location;
 import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,6 +19,7 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -47,6 +50,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+        callPermissions();
+
         return root;
     }
 
@@ -54,10 +59,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
 
-        LocationRequest locationRequest = LocationRequest.create();
-        locationRequest.setInterval(10000);
-        locationRequest.setFastestInterval(5000);
-        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        map.getUiSettings().setAllGesturesEnabled(false);
 
         // Add a marker in Sydney and move the camera
         LatLng sydney = new LatLng(-34, 151);
@@ -78,8 +80,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             @Override
             public void onLocationResult(LocationResult locationResult) {
                 super.onLocationResult(locationResult);
-                Log.i("info", "lat: "+locationResult.getLastLocation().getLatitude()+
-                        ", lon: "+locationResult.getLastLocation().getLatitude());
+                // Toast.makeText(getContext(), "lat: "+ locationResult.getLastLocation().getLatitude(), Toast.LENGTH_SHORT).show();
+                map.clear();
+
+                Location loc = locationResult.getLastLocation();
+                LatLng coord = new LatLng(loc.getLatitude(), loc.getLongitude());
+                map.addMarker(new MarkerOptions().position(coord).title("You"));
+                map.moveCamera(CameraUpdateFactory.newLatLngZoom(coord, 15.0f));
+
             }
         }, Looper.getMainLooper());
     }
@@ -94,7 +102,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         Permissions.check(getContext()/*context*/, permissions, rationale, options, new PermissionHandler() {
             @Override
             public void onGranted() {
-                // do your task.
+                requestLocationUpdates();
             }
 
             @Override
