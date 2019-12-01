@@ -3,4 +3,9 @@
     <string name="tab_text_0">Mapa</string>
     <string name="tab_text_1">Conversas</string>
     <string name="tab_text_2">Status</string>
+
+    <string name="nick_enter_empty">Campo de nome vazio</string>
+    <string name="email_enter_empty">Email vazio</string>
+    <string name="pass_enter_empty">Password vazio</string>
+    <string name="pass_and_reenter_incorrect">Passwords não são iguais</string>
 </resources>

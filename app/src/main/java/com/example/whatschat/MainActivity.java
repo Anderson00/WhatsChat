@@ -44,8 +44,8 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnR
 
         transaction = manager.beginTransaction();
         transaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
-        //transaction.add(R.id.root, new LoginFragment());
-        transaction.add(R.id.root, new HomeFragment());
+        transaction.add(R.id.root, new LoginFragment());
+        //transaction.add(R.id.root, new HomeFragment());
         transaction.commit();
     }
 

@@ -9,15 +9,23 @@ import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import com.example.whatschat.model.Application;
 import com.example.whatschat.model.HomeMessage;
 import com.example.whatschat.ui.main.MessagesFragment;
 import com.example.whatschat.ui.main.PlaceholderFragment;
 import com.example.whatschat.ui.main.SectionsPagerAdapter;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -28,6 +36,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.appcompat.widget.AppCompatCheckBox;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
@@ -38,6 +47,7 @@ public class LoginFragment extends Fragment {
     private Uri imageUri;
     private final static int CAMERA_PIC_REQUEST = 1;
     private CircleImageView profileImg;
+    private FirebaseAuth auth;
 
     public LoginFragment(){
 
@@ -46,7 +56,19 @@ public class LoginFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        auth = FirebaseAuth.getInstance();
+    }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        if(auth.getCurrentUser() == null){
+            Application.getInstance().setCurrentUser(auth.getCurrentUser());
+
+            OnReplaceFragment onReplaceFragment = (OnReplaceFragment) getContext();
+            onReplaceFragment.replaceFragment(new HomeFragment());
+        }
     }
 
     @Override
@@ -58,7 +80,11 @@ public class LoginFragment extends Fragment {
         OnReplaceFragment implReplaceFrag = (OnReplaceFragment) getContext();
 
         profileImg = (CircleImageView) root.findViewById(R.id.profile_image);
+        TextInputEditText inputEmail = root.findViewById(R.id.input_email);
+        TextInputEditText inputPass = root.findViewById(R.id.input_pass);
         AppCompatButton buttonEntrar = root.findViewById(R.id.button_entrar);
+        AppCompatButton buttonCadastrar = root.findViewById(R.id.button_cadastrar);
+        TextView msgError = root.findViewById(R.id.error_msg);
 
         profileImg.setOnClickListener(event -> {
             Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
@@ -66,7 +92,12 @@ public class LoginFragment extends Fragment {
         });
 
         buttonEntrar.setOnClickListener(event -> {
-            implReplaceFrag.replaceFragment(new HomeFragment());
+            login(inputEmail.getText().toString(), inputPass.getText().toString(), msgError);
+            //implReplaceFrag.replaceFragment(new HomeFragment());
+        });
+
+        buttonCadastrar.setOnClickListener(event -> {
+            implReplaceFrag.replaceFragment(new CadastrarFragment());
         });
 
         return root;
@@ -78,6 +109,37 @@ public class LoginFragment extends Fragment {
             Bitmap image = (Bitmap) data.getExtras().get("data");
             profileImg.setImageBitmap(image);
         }
+    }
+
+    public void login(String email, String pass, TextView msgError){
+        if(email.isEmpty()){
+            msgError.setText(getResources().getString(R.string.email_enter_empty));
+            msgError.setVisibility(View.VISIBLE);
+            return;
+        }
+
+        if(pass.isEmpty()){
+            msgError.setText(getResources().getString(R.string.pass_enter_empty));
+            msgError.setVisibility(View.VISIBLE);
+            return;
+        }
+
+        auth.signInWithEmailAndPassword(email, pass)
+                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if(task.isSuccessful()) {
+                            ApplicationSingleton.getInstance().setUser(auth.getCurrentUser());
+                            OnReplaceFragment onReplaceFragment = (OnReplaceFragment) getContext();
+                            onReplaceFragment.replaceFragment(new HomeFragment());
+                        }
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+                    }
+                });
     }
 
     public interface OnReplaceFragment{

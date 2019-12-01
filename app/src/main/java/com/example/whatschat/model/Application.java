@@ -1,9 +1,11 @@
 package com.example.whatschat.model;
 
+import com.google.firebase.auth.FirebaseUser;
+
 public class Application {
 
     private static Application instance;
-    private User currentUser;
+    private FirebaseUser currentUser;
 
     private Application(){
 
@@ -18,11 +20,11 @@ public class Application {
         return instance;
     }
 
-    public void setCurrentUser(User currentUser) {
+    public void setCurrentUser(FirebaseUser currentUser) {
         this.currentUser = currentUser;
     }
 
-    public User getCurrentUser(){
+    public FirebaseUser getCurrentUser(){
         return this.currentUser;
     }
 }
