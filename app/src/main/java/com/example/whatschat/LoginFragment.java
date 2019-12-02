@@ -9,6 +9,7 @@ import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.TextView;
 
 import com.example.whatschat.model.Application;
@@ -35,12 +36,14 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDialog;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatCheckBox;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 import de.hdodenhof.circleimageview.CircleImageView;
+import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 
 public class LoginFragment extends Fragment {
 
@@ -57,13 +60,14 @@ public class LoginFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         auth = FirebaseAuth.getInstance();
+        //showProgressDialog();
     }
 
     @Override
     public void onStart() {
         super.onStart();
 
-        if(auth.getCurrentUser() == null){
+        if(auth.getCurrentUser() != null){
             Application.getInstance().setCurrentUser(auth.getCurrentUser());
 
             OnReplaceFragment onReplaceFragment = (OnReplaceFragment) getContext();
@@ -132,6 +136,8 @@ public class LoginFragment extends Fragment {
                             ApplicationSingleton.getInstance().setUser(auth.getCurrentUser());
                             OnReplaceFragment onReplaceFragment = (OnReplaceFragment) getContext();
                             onReplaceFragment.replaceFragment(new HomeFragment());
+                        }else{
+                            msgError.setText("Email ou Senha incorretos");
                         }
                     }
                 }).addOnFailureListener(new OnFailureListener() {
@@ -140,6 +146,15 @@ public class LoginFragment extends Fragment {
 
                     }
                 });
+    }
+
+    public void showProgressDialog(){
+        AppCompatDialog dialog = new AppCompatDialog(getContext());
+        MaterialProgressBar progressBar = new MaterialProgressBar(getContext());
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(progressBar);
+        dialog.show();
+
     }
 
     public interface OnReplaceFragment{
