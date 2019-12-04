@@ -1,24 +1,36 @@
 package com.example.whatschat;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.whatschat.model.HomeMessage;
+import com.example.whatschat.model.Usuario;
 import com.example.whatschat.ui.main.MessagesFragment;
 import com.example.whatschat.ui.main.PageViewModel;
 import com.example.whatschat.ui.main.PlaceholderFragment;
 import com.example.whatschat.ui.main.SectionsPagerAdapter;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
@@ -69,6 +81,7 @@ public class HomeFragment extends Fragment {
             public void onClick(View view) {
 
                 msgFragment.addHomeMessage(new HomeMessage("", "Anderson", "iai tudo bem?", new Date()));
+                createIputDialog();
                 /*Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
                  */
@@ -76,5 +89,32 @@ public class HomeFragment extends Fragment {
         });
 
         return root;
+    }
+
+    public void createIputDialog(){
+        LayoutInflater layoutInflaterAndroid = LayoutInflater.from(getContext());
+        View mView = layoutInflaterAndroid.inflate(R.layout.input_dialog_contatos, null);
+        AlertDialog.Builder inputDialogBuilder = new AlertDialog.Builder(getContext());
+        inputDialogBuilder.setView(mView);
+
+        final EditText editText = (EditText) mView.findViewById(R.id.editText);
+        inputDialogBuilder
+                .setTitle("Adicionar contato")
+                .setCancelable(false)
+                .setPositiveButton("Add", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Toast.makeText(getContext(),"Texto: "+editText.getText().toString(), Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.cancel();
+                    }
+                });
+
+        AlertDialog inputDialog = inputDialogBuilder.create();
+        inputDialog.show();
     }
 }
