@@ -1,5 +1,8 @@
 package com.example.whatschat.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Usuario {
 
     private String uuid;
@@ -7,8 +10,10 @@ public class Usuario {
     private String email;
     private String profileIconURI;
 
-    public Usuario(){
+    private List<String> contatos;
 
+    public Usuario(){
+        this.contatos = new ArrayList<>();
     }
 
     public String getUuid() {
@@ -41,5 +46,17 @@ public class Usuario {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public List<String> getContatos() {
+        return contatos;
+    }
+
+    public void setContatos(List<String> contatos) {
+        this.contatos = contatos;
+    }
+
+    public void addContato(String uuid){
+        this.contatos.add(uuid);
     }
 }

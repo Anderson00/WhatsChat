@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.whatschat.model.HomeMessage;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -50,6 +51,8 @@ public class MessagesHomeAdapter extends RecyclerView.Adapter<MessagesHomeAdapte
             intent.putExtra("USER_PROFILE", hm);
             holder.itemView.getContext().startActivity(intent);
         });
+
+        Picasso.get().load(hm.getImgProfile()).into(holder.imgProfile);
     }
 
     @Override

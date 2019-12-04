@@ -5,12 +5,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.whatschat.R;
 import com.example.whatschat.model.HomeMessage;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -26,7 +35,7 @@ public class MessagesFragment extends Fragment {
     private static final String ARG_SECTION_NUMBER = "section_number";
 
     private PageViewModel pageViewModel;
-    private MessagesHomeAdapter adapter;
+    public MessagesHomeAdapter adapter;
     private List<HomeMessage> messages = new ArrayList<HomeMessage>();
 
     public static MessagesFragment newInstance(int index) {
@@ -67,6 +76,21 @@ public class MessagesFragment extends Fragment {
         recycler.setLayoutManager(new LinearLayoutManager(this.getContext()));
         this.adapter = new MessagesHomeAdapter(this.messages);
         recycler.setAdapter(adapter);
+
+        FirebaseFirestore.getInstance().collection("users")
+                .document(FirebaseAuth.getInstance().getUid())
+                .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()){
+                    Map<String, Object> map = task.getResult().getData();
+                    String username = map.get("username").toString();
+                    String profileImg = map.get("profileIconURI").toString();
+
+                    addHomeMessage(new HomeMessage(profileImg, username, "", new Date()));
+                }
+            }
+        });
     }
 
     public void addHomeMessage(HomeMessage hMessage){

@@ -20,6 +20,9 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -38,6 +41,8 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
 
 public class HomeFragment extends Fragment {
+
+    private MessagesFragment msgFragment;
 
     public HomeFragment(){
 
@@ -63,7 +68,7 @@ public class HomeFragment extends Fragment {
 
 
         List<Fragment> fragments = new ArrayList<Fragment>();
-        final MessagesFragment msgFragment = new MessagesFragment();
+        msgFragment = new MessagesFragment();
         fragments.add(new MapFragment());
         fragments.add(msgFragment);
         fragments.add(new PlaceholderFragment());
@@ -104,7 +109,27 @@ public class HomeFragment extends Fragment {
                 .setPositiveButton("Add", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        Toast.makeText(getContext(),"Texto: "+editText.getText().toString(), Toast.LENGTH_SHORT).show();
+                        CollectionReference ref = FirebaseFirestore.getInstance().collection("users");
+                        Query query = ref.whereEqualTo("email", editText.getText().toString());
+
+                        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                for(QueryDocumentSnapshot doc : task.getResult()){
+                                    String uuid = doc.getData().get("uuid").toString();
+                                    if(!uuid.equals(FirebaseAuth.getInstance().getUid())) {
+                                        ref.document(FirebaseAuth.getInstance().getUid())
+                                                .update("contatos", FieldValue.arrayUnion(uuid))
+                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Void> task) {
+
+                                                    }
+                                                });
+                                    }
+                                }
+                            }
+                        });
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
