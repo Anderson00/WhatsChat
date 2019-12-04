@@ -51,6 +51,7 @@ public class LoginFragment extends Fragment {
     private final static int CAMERA_PIC_REQUEST = 1;
     private CircleImageView profileImg;
     private FirebaseAuth auth;
+    private AppCompatDialog dialog;
 
     public LoginFragment(){
 
@@ -60,6 +61,11 @@ public class LoginFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         auth = FirebaseAuth.getInstance();
+
+        dialog = new AppCompatDialog(getContext());
+        MaterialProgressBar progressBar = new MaterialProgressBar(getContext());
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(progressBar);
         //showProgressDialog();
     }
 
@@ -128,33 +134,30 @@ public class LoginFragment extends Fragment {
             return;
         }
 
+        dialog.show();
+
         auth.signInWithEmailAndPassword(email, pass)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
+                        dialog.dismiss();
                         if(task.isSuccessful()) {
                             ApplicationSingleton.getInstance().setUser(auth.getCurrentUser());
                             OnReplaceFragment onReplaceFragment = (OnReplaceFragment) getContext();
                             onReplaceFragment.replaceFragment(new HomeFragment());
                         }else{
                             msgError.setText("Email ou Senha incorretos");
+                            msgError.setVisibility(View.VISIBLE);
                         }
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-
+                        dialog.dismiss();
+                        msgError.setText("Email ou Senha incorretos");
+                        msgError.setVisibility(View.VISIBLE);
                     }
                 });
-    }
-
-    public void showProgressDialog(){
-        AppCompatDialog dialog = new AppCompatDialog(getContext());
-        MaterialProgressBar progressBar = new MaterialProgressBar(getContext());
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(progressBar);
-        dialog.show();
-
     }
 
     public interface OnReplaceFragment{

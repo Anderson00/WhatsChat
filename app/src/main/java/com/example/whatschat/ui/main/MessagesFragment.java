@@ -63,6 +63,7 @@ public class MessagesFragment extends Fragment {
         if(adapter != null)
             return;
         RecyclerView recycler = (RecyclerView) view.findViewById(R.id.msg_list);
+        recycler.setPadding(0,150,0,150);
         recycler.setLayoutManager(new LinearLayoutManager(this.getContext()));
         this.adapter = new MessagesHomeAdapter(this.messages);
         recycler.setAdapter(adapter);

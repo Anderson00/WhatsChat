@@ -25,6 +25,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 
 import com.example.whatschat.ui.main.SectionsPagerAdapter;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -54,6 +55,19 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnR
         MenuInflater infalter = getMenuInflater();
         getMenuInflater().inflate(R.menu.home_menu, menu);
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()){
+            case R.id.menu_logout:
+                FirebaseAuth.getInstance().signOut();
+                replaceFragment(new LoginFragment());
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
