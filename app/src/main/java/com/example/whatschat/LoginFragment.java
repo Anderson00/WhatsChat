@@ -41,6 +41,7 @@ import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatCheckBox;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.ViewPager;
 import de.hdodenhof.circleimageview.CircleImageView;
 import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
@@ -107,7 +108,11 @@ public class LoginFragment extends Fragment {
         });
 
         buttonCadastrar.setOnClickListener(event -> {
-            implReplaceFrag.replaceFragment(new CadastrarFragment());
+            //implReplaceFrag.replaceFragment(new CadastrarFragment());
+            FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.root, new CadastrarFragment());
+            transaction.addToBackStack(null);
+            transaction.commit();
         });
 
         return root;

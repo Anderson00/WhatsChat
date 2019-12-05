@@ -1,9 +1,11 @@
 package com.example.whatschat;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -85,8 +87,10 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                msgFragment.addHomeMessage(new HomeMessage("", "Anderson", "iai tudo bem?", new Date()));
-                createIputDialog();
+                Intent intent = new Intent(ContatosActivity.ACTION);
+                startActivity(intent);
+                //msgFragment.addHomeMessage(new HomeMessage("", "Anderson", "iai tudo bem?", new Date()));
+                //createIputDialog();
                 /*Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
                  */
@@ -141,5 +145,17 @@ public class HomeFragment extends Fragment {
 
         AlertDialog inputDialog = inputDialogBuilder.create();
         inputDialog.show();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Toast.makeText(getContext(), "entrou aq", Toast.LENGTH_SHORT).show();
+        switch (item.getItemId()){
+            case R.id.add_contato:
+                createIputDialog();
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

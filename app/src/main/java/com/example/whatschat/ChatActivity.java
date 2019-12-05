@@ -10,6 +10,7 @@ import android.widget.Toast;
 import com.example.whatschat.model.HomeMessage;
 import com.example.whatschat.model.Message;
 import com.example.whatschat.ui.main.adapter.MessagesAdapter;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,6 +19,7 @@ import java.util.List;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ChatActivity extends AppCompatActivity {
 
@@ -39,8 +41,12 @@ public class ChatActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
+        CircleImageView profileImg = findViewById(R.id.chat_img);
         TextView title = (TextView) findViewById(R.id.toolbar_title);
         TextView subtitle = (TextView) findViewById(R.id.toolbar_subtitle);
+
+
+        Picasso.get().load(profileTarget.getImgProfile()).into(profileImg);
 
         title.setText(this.profileTarget.getNameProfile());
         subtitle.setText("online");

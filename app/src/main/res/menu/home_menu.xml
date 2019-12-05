@@ -8,6 +8,11 @@
         android:title="Search"
         app:showAsAction="always"
         app:actionViewClass="android.widget.SearchView" />
+    <item
+        android:id="@+id/add_contato"
+        android:title="Adicionar"
+        app:showAsAction="always"
+        android:icon="@android:drawable/ic_menu_add"/>
     <item android:title="Novo grupo" />
     <item android:title="Configurações" />
     <item android:title="Logout"

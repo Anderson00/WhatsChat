@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnR
                 replaceFragment(new LoginFragment());
                 break;
         }
-
+        getSupportFragmentManager().getFragments().get(0).onOptionsItemSelected(item);
         return super.onOptionsItemSelected(item);
     }
 
