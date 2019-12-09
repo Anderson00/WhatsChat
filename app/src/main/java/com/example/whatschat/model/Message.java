@@ -5,12 +5,11 @@ import java.util.Date;
 public class Message {
 
     private String content;
-    private Date data;
-    private boolean owner;
-    private String ownerName;
+    private long timestamp;
+    private String fromId;
+    private String toId;
 
     public Message(){
-
     }
 
     public String getContent() {
@@ -21,27 +20,27 @@ public class Message {
         this.content = content;
     }
 
-    public Date getData() {
-        return data;
+    public long getTimestamp() {
+        return timestamp;
     }
 
-    public void setData(Date data) {
-        this.data = data;
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
     }
 
-    public boolean isOwner() {
-        return owner;
+    public String getFromId() {
+        return fromId;
     }
 
-    public void setOwner(boolean owner) {
-        this.owner = owner;
+    public void setFromId(String fromId) {
+        this.fromId = fromId;
     }
 
-    public String getOwnerName() {
-        return ownerName;
+    public String getToId() {
+        return toId;
     }
 
-    public void setOwnerName(String ownerName) {
-        this.ownerName = ownerName;
+    public void setToId(String toId) {
+        this.toId = toId;
     }
 }

@@ -1,74 +1,72 @@
 package com.example.whatschat.ui.main.adapter;
 
-import com.example.whatschat.R;
-
-import android.content.Context;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.whatschat.model.HomeMessage;
+import com.example.whatschat.R;
 import com.example.whatschat.model.Message;
 import com.example.whatschat.ui.main.MessagesHomeAdapter;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MessagesAdapter extends BaseAdapter {
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
+public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.MessagesAdapterViewHolder> {
 
     private List<Message> msgs;
-    private Context ctx;
+    private String uuid;
 
-    public MessagesAdapter(Context ctx, List<Message> msgs){
-        this.ctx = ctx;
-        this.msgs = msgs;
-        if(this.msgs == null)
-            this.msgs = new ArrayList<>();
+    public MessagesAdapter(){
+        this.msgs = new ArrayList<>();
+        this.uuid = FirebaseAuth.getInstance().getUid();
+    }
+
+    public void addMessage(Message msg){
+        this.msgs.add(msg);
+        notifyDataSetChanged();
+    }
+
+    @NonNull
+    @Override
+    public MessagesAdapterViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.msg_chat_list, parent, false);
+        return new MessagesAdapterViewHolder(view);
     }
 
     @Override
-    public int getCount() {
+    public void onBindViewHolder(@NonNull MessagesAdapterViewHolder holder, int position) {
+        Message msg = this.msgs.get(position);
+        if(uuid.equals(msg.getFromId())){
+            holder.contentMsg.setGravity(Gravity.RIGHT);
+        }else{
+            holder.parent.setGravity(Gravity.LEFT);
+        }
+
+        holder.contentMsg.setText(msg.getContent());
+    }
+
+    @Override
+    public int getItemCount() {
         return msgs.size();
     }
 
-    @Override
-    public Object getItem(int i) {
-        return msgs.get(i);
-    }
+    public class MessagesAdapterViewHolder extends RecyclerView.ViewHolder{
 
-    @Override
-    public long getItemId(int i) {
-        return i;
-    }
+        LinearLayout parent;
+        TextView contentMsg;
 
-    @Override
-    public View getView(int i, View view, ViewGroup viewGroup) {
-        if(view == null)
-            view = LayoutInflater.from(ctx).inflate(R.layout.msg_chat_list, viewGroup, false);
+        public MessagesAdapterViewHolder(View view){
+            super(view);
 
-        Message msg = (Message) getItem(i);
-        TextView textViewMsg = (TextView) view.findViewById(R.id.msg);
-        LinearLayout parentMsg = (LinearLayout) view.findViewById(R.id.msg_parent);
-
-        textViewMsg.setText(msg.getContent());
-        if(msg.isOwner()){
-            parentMsg.setGravity(Gravity.RIGHT);
-            textViewMsg.setBackgroundResource(R.drawable.message_send);
-        }else{
-            parentMsg.setGravity(Gravity.LEFT);
-            textViewMsg.setBackgroundResource(R.drawable.message_response);
+            parent = view.findViewById(R.id.msg_parent);
+            contentMsg = view.findViewById(R.id.msg);
         }
-
-
-        return view;
-    }
-
-    public void addItem(Message msg){
-        this.msgs.add(msg);
-        this.notifyDataSetChanged();
     }
 }
