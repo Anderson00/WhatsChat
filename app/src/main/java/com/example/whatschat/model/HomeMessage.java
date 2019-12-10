@@ -10,6 +10,7 @@ import java.util.Date;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class HomeMessage implements Serializable {
+    private String targetUuid;
     private String imgProfile; // File Directory
     private String nameProfile;
     private String msgProfile;
@@ -21,6 +22,14 @@ public class HomeMessage implements Serializable {
         this.nameProfile = nameProfile;
         this.msgProfile = msgProfile;
         this.dateMsgProfile = datMsgProfile;
+    }
+
+    public void setTargetUuid(String targetUuid) {
+        this.targetUuid = targetUuid;
+    }
+
+    public String getTargetUuid() {
+        return targetUuid;
     }
 
     public String getImgProfile() {

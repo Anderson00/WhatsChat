@@ -8,12 +8,20 @@ import android.widget.TextView;
 
 import com.example.whatschat.model.HomeMessage;
 import com.example.whatschat.model.Message;
+import com.example.whatschat.model.Usuario;
 import com.example.whatschat.ui.main.adapter.MessagesAdapter;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.core.OrderBy;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -33,6 +41,7 @@ public class ChatActivity extends AppCompatActivity {
     private ListView msgList;
     private MessagesAdapter adapter;
     private List<Message> msgs;
+    private Usuario me;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -62,30 +71,58 @@ public class ChatActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(this.adapter);
 
-        Message m1 = new Message();
-        m1.setContent("OI");
-        m1.setFromId(FirebaseAuth.getInstance().getUid());
-
-        Message m2 = new Message();
-        m2.setContent("Tudo bem?");
-        m2.setFromId("werwer");
-
-        Message m3 = new Message();
-        m3.setContent("Tudo bem?");
-        m3.setFromId("werwer");
-
-        this.adapter.addMessage(m1);
-        this.adapter.addMessage(m2);
-        this.adapter.addMessage(m3);
-
         EditText msgField = (EditText) findViewById(R.id.msg_field);
         Button btSend = (Button) findViewById(R.id.send_button);
         btSend.setOnClickListener(event -> {
             if(msgField.getText().toString().isEmpty())
                 return;
-            //sendMessage(msgField.getText().toString());
+
+            Message msg = new Message();
+            msg.setFromId(FirebaseAuth.getInstance().getUid());
+            msg.setToId(profileTarget.getTargetUuid());
+            msg.setContent(msgField.getText().toString());
+            msg.setTimestamp(System.currentTimeMillis());
+
+            sendMessage(msg);
             msgField.setText("");
         });
+
+
+        FirebaseFirestore.getInstance().collection("users")
+                .document(FirebaseAuth.getInstance().getUid())
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        me = documentSnapshot.toObject(Usuario.class);
+                        fetchMessages();
+                    }
+                });
+    }
+
+    private void fetchMessages(){
+        if (me != null){
+
+            FirebaseFirestore.getInstance().collection("conversas")
+                    .document(me.getUuid())
+                    .collection(profileTarget.getTargetUuid())
+                    .orderBy("timestamp", Query.Direction.ASCENDING)
+                    .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                        @Override
+                        public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                            List<DocumentChange> documentChanges = queryDocumentSnapshots.getDocumentChanges();
+
+                            if(documentChanges != null){
+                                for(DocumentChange doc : documentChanges){
+                                    if(doc.getType() == DocumentChange.Type.ADDED){
+                                        Message msg = doc.getDocument().toObject(Message.class);
+                                        adapter.addMessage(msg);
+                                    }
+                                }
+                            }
+                        }
+                    });
+        }
     }
 
     @Override
@@ -95,6 +132,9 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     public void sendMessage(Message msg){
+        if(msg.getContent().isEmpty())
+            return;
+        //                 this.adapter.addMessage(msg);
         FirebaseFirestore.getInstance().collection("conversas")
                 .document(msg.getFromId())
                 .collection(msg.getToId())

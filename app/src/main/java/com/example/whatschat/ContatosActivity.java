@@ -62,8 +62,9 @@ public class ContatosActivity extends AppCompatActivity {
                                             String username = data.get("username").toString();
                                             String email = data.get("email").toString();
                                             String profileIconURI = data.get("profileIconURI").toString();
-
-                                            addContato(new HomeMessage(profileIconURI, username, email, null));
+                                            HomeMessage msg = new HomeMessage(profileIconURI, username, email, null);
+                                            msg.setTargetUuid(data.get("uuid").toString());
+                                            addContato(msg);
                                         }
                                     });
                         }

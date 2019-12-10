@@ -88,7 +88,9 @@ public class MessagesFragment extends Fragment {
                     String username = map.get("username").toString();
                     String profileImg = map.get("profileIconURI").toString();
 
-                    addHomeMessage(new HomeMessage(profileImg, username, "", new Date()));
+                    HomeMessage hm = new HomeMessage(profileImg, username, "", new Date());
+                    hm.setTargetUuid(map.get("uuid").toString());
+                    addHomeMessage(hm);
                 }
             }
         });
