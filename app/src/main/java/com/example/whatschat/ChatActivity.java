@@ -9,12 +9,17 @@ import android.widget.TextView;
 import com.example.whatschat.model.HomeMessage;
 import com.example.whatschat.model.Message;
 import com.example.whatschat.ui.main.adapter.MessagesAdapter;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -78,7 +83,7 @@ public class ChatActivity extends AppCompatActivity {
         btSend.setOnClickListener(event -> {
             if(msgField.getText().toString().isEmpty())
                 return;
-            sendMessage(msgField.getText().toString());
+            //sendMessage(msgField.getText().toString());
             msgField.setText("");
         });
     }
@@ -89,7 +94,39 @@ public class ChatActivity extends AppCompatActivity {
         return true;
     }
 
-    public void sendMessage(String content){
+    public void sendMessage(Message msg){
+        FirebaseFirestore.getInstance().collection("conversas")
+                .document(msg.getFromId())
+                .collection(msg.getToId())
+                .add(msg)
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
 
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+                    }
+                });
+
+        FirebaseFirestore.getInstance().collection("conversas")
+                .document(msg.getToId())
+                .collection(msg.getFromId())
+                .add(msg)
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+                    }
+                });
     }
 }
