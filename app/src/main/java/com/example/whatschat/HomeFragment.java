@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.whatschat.model.Application;
 import com.example.whatschat.model.HomeMessage;
 import com.example.whatschat.model.Usuario;
 import com.example.whatschat.ui.main.MessagesFragment;
@@ -18,12 +19,14 @@ import com.example.whatschat.ui.main.PageViewModel;
 import com.example.whatschat.ui.main.PlaceholderFragment;
 import com.example.whatschat.ui.main.SectionsPagerAdapter;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -61,6 +64,17 @@ public class HomeFragment extends Fragment {
             @NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.home_layout_fragment, container, false);
+
+        FirebaseFirestore.getInstance().collection("users")
+                .document(FirebaseAuth.getInstance().getUid())
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        Usuario usuario = documentSnapshot.toObject(Usuario.class);
+                        ApplicationSingleton.getInstance().setUsuario(usuario);
+                    }
+                });
 
         AppCompatActivity ctx = (AppCompatActivity) getContext();
 
@@ -149,7 +163,6 @@ public class HomeFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Toast.makeText(getContext(), "entrou aq", Toast.LENGTH_SHORT).show();
         switch (item.getItemId()){
             case R.id.add_contato:
                 createIputDialog();

@@ -6,6 +6,8 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.example.whatschat.model.Application;
+import com.example.whatschat.model.Contato;
 import com.example.whatschat.model.HomeMessage;
 import com.example.whatschat.model.Message;
 import com.example.whatschat.model.Usuario;
@@ -143,6 +145,18 @@ public class ChatActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
 
+                        Contato contato = new Contato();
+                        contato.setUuid(msg.getToId());
+                        contato.setProfileImgURL(profileTarget.getImgProfile());
+                        contato.setLastMessage(msg.getContent());
+                        contato.setTimestamp(msg.getTimestamp());
+                        contato.setName(profileTarget.getNameProfile());
+
+                        FirebaseFirestore.getInstance().collection("last-messages")
+                                .document(msg.getFromId())
+                                .collection("contatos")
+                                .document(msg.getToId())
+                                .set(contato);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -160,6 +174,20 @@ public class ChatActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
 
+                        Usuario usuario = ApplicationSingleton.getInstance().getUsuario();
+
+                        Contato contato = new Contato();
+                        contato.setUuid(msg.getToId());
+                        contato.setProfileImgURL(usuario.getProfileIconURI());
+                        contato.setLastMessage(msg.getContent());
+                        contato.setTimestamp(msg.getTimestamp());
+                        contato.setName(usuario.getUsername());
+
+                        FirebaseFirestore.getInstance().collection("last-messages")
+                                .document(msg.getToId())
+                                .collection("contatos")
+                                .document(msg.getFromId())
+                                .set(contato);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {

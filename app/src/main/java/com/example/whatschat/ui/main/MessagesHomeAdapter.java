@@ -52,7 +52,8 @@ public class MessagesHomeAdapter extends RecyclerView.Adapter<MessagesHomeAdapte
             holder.itemView.getContext().startActivity(intent);
         });
 
-        Picasso.get().load(hm.getImgProfile()).into(holder.imgProfile);
+        if(hm.getImgProfile() != null && !hm.getImgProfile().isEmpty() && !hm.getImgProfile().equals(""))
+            Picasso.get().load(hm.getImgProfile()).into(holder.imgProfile);
     }
 
     @Override
