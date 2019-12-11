@@ -92,38 +92,75 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     @Override
                     public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
                         List<DocumentChange> docs = queryDocumentSnapshots.getDocumentChanges();
-                        for(DocumentChange doc : docs){
-                            if(doc.getType() == DocumentChange.Type.ADDED ) {
+                        if(docs != null) {
+                            map.clear();
+                            /*for (DocumentChange doc : docs) {
                                 GpsLocation gps = doc.getDocument().toObject(GpsLocation.class);
-                                if(gps.getUuid() != FirebaseAuth.getInstance().getUid()) {
 
-                                    LayoutInflater inflater = (LayoutInflater) getActivity()
-                                            .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                                    View v = inflater.inflate(R.layout.custom_marker_layout, null);
+                                LayoutInflater inflater = (LayoutInflater) getActivity()
+                                        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                                View v = inflater.inflate(R.layout.custom_marker_layout, null);
 
-                                    LatLng coord = new LatLng(gps.getLatitude(), gps.getLongitude());
+                                LatLng coord = new LatLng(gps.getLatitude(), gps.getLongitude());
 
-                                    CircleImageView imgView = v.findViewById(R.id.img);
-                                    Picasso.get().load(gps.getProfileImgURL())
-                                            .into(imgView, new Callback() {
-                                                @Override
-                                                public void onSuccess() {
-                                                    map.addMarker(new MarkerOptions()
-                                                            .position(coord)
-                                                            .title(gps.getName())
-                                                            .icon(BitmapDescriptorFactory.fromBitmap(loadBitmapFromView(v))));
-                                                    map.moveCamera(CameraUpdateFactory.newLatLngZoom(coord, 15.0f));
+                                CircleImageView imgView = v.findViewById(R.id.img);
+                                Picasso.get().load(gps.getProfileImgURL())
+                                        .into(imgView, new Callback() {
+                                            @Override
+                                            public void onSuccess() {
+                                                map.addMarker(new MarkerOptions()
+                                                        .position(coord)
+                                                        .title(gps.getName())
+                                                        .icon(BitmapDescriptorFactory.fromBitmap(loadBitmapFromView(v))));
+                                                map.moveCamera(CameraUpdateFactory.newLatLngZoom(coord, 15.0f));
+                                            }
+
+                                            @Override
+                                            public void onError(Exception e) {
+
+                                            }
+                                        });
+                            }*/
+                            FirebaseFirestore.getInstance().collection("gps")
+                                    .get()
+                                    .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                        @Override
+                                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                            List<DocumentSnapshot> docs = queryDocumentSnapshots.getDocuments();
+                                            if(docs != null) {
+                                                for (DocumentSnapshot doc : docs) {
+                                                    GpsLocation gps = doc.toObject(GpsLocation.class);
+
+                                                    LayoutInflater inflater = (LayoutInflater) getActivity()
+                                                            .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                                                    View v = inflater.inflate(R.layout.custom_marker_layout, null);
+
+                                                    LatLng coord = new LatLng(gps.getLatitude(), gps.getLongitude());
+
+                                                    CircleImageView imgView = v.findViewById(R.id.img);
+                                                    Picasso.get().load(gps.getProfileImgURL())
+                                                            .into(imgView, new Callback() {
+                                                                @Override
+                                                                public void onSuccess() {
+                                                                    map.addMarker(new MarkerOptions()
+                                                                            .position(coord)
+                                                                            .title(gps.getName())
+                                                                            .icon(BitmapDescriptorFactory.fromBitmap(loadBitmapFromView(v))));
+                                                                    map.moveCamera(CameraUpdateFactory.newLatLngZoom(coord, 15.0f));
+                                                                }
+
+                                                                @Override
+                                                                public void onError(Exception e) {
+
+                                                                }
+                                                            });
                                                 }
-
-                                                @Override
-                                                public void onError(Exception e) {
-
-                                                }
-                                            });
-                                }
-                            }
+                                            }
+                                        }
+                                    });
                         }
                     }
+
                 });
     }
 
@@ -141,19 +178,20 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             public void onLocationResult(LocationResult locationResult) {
                 super.onLocationResult(locationResult);
                 // Toast.makeText(getContext(), "lat: "+ locationResult.getLastLocation().getLatitude(), Toast.LENGTH_SHORT).show();
-                map.clear();
+                //map.clear();
 
                 Location loc = locationResult.getLastLocation();
                 LatLng coord = new LatLng(loc.getLatitude(), loc.getLongitude());
-
+                Usuario me = ApplicationSingleton.getInstance().getUsuario();
+                /*
                 LayoutInflater inflater = (LayoutInflater) getActivity()
                         .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 View v = inflater.inflate(R.layout.custom_marker_layout, null);
+                */
 
 
-                Usuario me = ApplicationSingleton.getInstance().getUsuario();
                 if(me != null){
-
+                    /*
                     CircleImageView imgView = v.findViewById(R.id.img);
                     Picasso.get().load(me.getProfileIconURI())
                             .into(imgView, new Callback() {
@@ -171,7 +209,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
                                 }
                             });
-
+                    */
                     GpsLocation gps = new GpsLocation();
                     gps.setLatitude(loc.getLatitude());
                     gps.setLongitude(loc.getLongitude());

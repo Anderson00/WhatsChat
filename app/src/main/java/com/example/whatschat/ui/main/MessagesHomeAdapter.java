@@ -47,7 +47,7 @@ public class MessagesHomeAdapter extends RecyclerView.Adapter<MessagesHomeAdapte
             holder.quantMessage.setVisibility(View.INVISIBLE);
 
         holder.itemView.setOnClickListener(view -> {
-            Intent intent = new Intent(MainActivity.CHAT_ACTIVITY);
+            Intent intent = new Intent("chatActivity");
             intent.putExtra("USER_PROFILE", hm);
             holder.itemView.getContext().startActivity(intent);
         });

@@ -129,17 +129,12 @@ public class MessagesFragment extends Fragment {
         });*/
     }
 
-    public void addHomeMessage(HomeMessage hMessage){
-        messages.add(hMessage);
-        adapter.notifyDataSetChanged();
-    }
-
     public void addHomeMessage(Contato hMessage){
         HomeMessage hm = new HomeMessage(hMessage.getProfileImgURL(),
                 hMessage.getName(),
                 hMessage.getLastMessage(),
                 new Date(hMessage.getTimestamp()));
-        hm.setTargetUuid(hMessage.getUuid() );
+        hm.setTargetUuid(hMessage.getUuid());
 
         messages.add(hm);
         adapter.notifyDataSetChanged();
